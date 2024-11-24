@@ -1,0 +1,4 @@
+D:/MASTER/TFM/datasets
+/mnt/mydisk/MASTER/TFM/datasets
+C:/Users/LauraM.Lidon/Documents/Python
+/media/kovita/0F5F0E1C0F5F0E1C/MASTER/TFM/datasets
