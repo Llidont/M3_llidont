@@ -22,15 +22,16 @@ def paired_augmentations(row: Series, new_index: int, output_dir: str, metadata:
         angle = random.uniform(-30, 30)
         ROI = ROI.rotate(angle, resample=Image.BICUBIC, expand=False, fillcolor=0)
         image = image.rotate(angle, resample=Image.BICUBIC, expand=False, fillcolor=0)
-
+		
         # Giro horizontal
         if random.random() > 0.5:
             ROI = ImageOps.mirror(ROI)
             image = ImageOps.mirror(image)
         
+        new_index = f"{new_index:05d}"
         # Guardamos las imágenes y creamos la nueva fila
-        ROI_path = os.path.join(output_dir, "ROI", "ROI" + str(new_index) + ".png")
-        image_path = os.path.join(output_dir, "image", "image" + str(new_index) + ".png")
+        ROI_path = os.path.join(output_dir, "ROI", "ROI_" + new_index + ".png")
+        image_path = os.path.join(output_dir, "image", "image_" + new_index + ".png")
         ROI.save(ROI_path, format="PNG")
         image.save(image_path, format="PNG")
         #print(f"Distorsion de {new_index} completada")
@@ -39,7 +40,7 @@ def paired_augmentations(row: Series, new_index: int, output_dir: str, metadata:
            "ROI_path": ROI_path,
            "image_path": image_path,
            "original": row["index"]}
-
+		
         # Add updated columns to new_row
         for column in metadata:
             new_row[column] = row[column]

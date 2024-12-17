@@ -19,7 +19,7 @@ metadata = ["calc_type",
 
 for i in range(0,len(clean_dataset)*2):
     random_row = clean_dataset.sample(1).iloc[0]
-    new_row = paired_augmentations(random_row, f"_{i:05d}", output_dir, metadata)
+    new_row = paired_augmentations(random_row, i, output_dir, metadata)
     augmented_dataset.append(new_row)
 
 # Guardamos el dataframe
