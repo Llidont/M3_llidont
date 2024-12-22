@@ -23,7 +23,7 @@ for i in range(0,len(clean_dataset)*2):
     augmented_dataset.append(new_row)
 
 # Guardamos el dataframe
-print(f"{new_index} imagenes generadas correctamente.")
+print(f"{len(clean_dataset)*2} imagenes generadas correctamente.")
 augmented_dataset_df = pd.DataFrame(augmented_dataset)
 augmented_dataset_df.to_csv(os.path.join('datasets', 'calc_dist', 'calc_dist_info.csv'), index=False)
 print(f"Dataset guardado correctamente.")

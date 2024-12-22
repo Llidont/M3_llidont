@@ -15,4 +15,3 @@ def download_dataset_CBIS_DDSM():
         print(path)
         os.makedirs(archives_path, exist_ok=True)
         shutil.move(path, archives_path)
-

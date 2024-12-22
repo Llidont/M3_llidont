@@ -1,3 +1,4 @@
+import copy
 import optuna
 import numpy as np
 import torch.nn as nn
@@ -30,6 +31,8 @@ class Linear_OptunaTrainer:
             dropout_rate=dropout_rate,
             num_neurons=num_neurons,
         ).to(self.device)
+        
+        initial_weights = copy.deepcopy(model.state_dict())
 
         # Define loss and optimizer
         criterion = nn.CrossEntropyLoss()
@@ -60,6 +63,7 @@ class Linear_OptunaTrainer:
                 "val_loss": val_loss,
                 "val_accuracy": val_accuracy,
                 "best_model": best_model.state_dict(),
+                "initial_weights": initial_weights,
                 "hyperparameters": {
                     "learning_rate": learning_rate,
                     "dropout_rate": dropout_rate,

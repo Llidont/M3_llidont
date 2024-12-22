@@ -26,7 +26,7 @@ for i in range(0,len(clean_dataset)*2):
 # Guardamos el dataframe
 augmented_dataset_df = pd.DataFrame(augmented_dataset)
 augmented_dataset_df.to_csv(os.path.join('datasets', 'mass_dist', 'mass_dist_info.csv'), index=False)
-print(f"{new_index} imagenes generadas correctamente.")
+print(f"{len(clean_dataset)*2} imagenes generadas correctamente.")
 
 display_png_images(augmented_dataset_df, 'ROI_path', 5, os.path.join('examples', 'mass_dist_image.jpeg'))
 display_png_images(augmented_dataset_df, 'image_path', 5, os.path.join('examples', 'mass_dist_roi.jpeg'))

@@ -1,7 +1,6 @@
 # Cargamos las funciones
 import os
 import pandas as pd
-import numpy as np
 import re
 from functions.clean_data.download_dataset_CBIS_DDSM import download_dataset_CBIS_DDSM
 from functions.clean_data.display_images import display_images
@@ -12,7 +11,12 @@ from functions.clean_data.crop_and_resize import crop_and_resize
 
 # Carga y limpieza de datos -------------------------------------------
 
-di_data = pd.read_csv('datasets/archive/csv/dicom_info.csv')
+try:
+    di_data = pd.read_csv(os.path.join('datasets', 'archive', 'csv', 'dicom_info.csv'))
+except:
+    download_dataset_CBIS_DDSM()
+    di_data = pd.read_csv(os.path.join('datasets', 'archive', 'csv', 'dicom_info.csv'))
+
 full_mammo_images_data = di_data[di_data['SeriesDescription'] == 'full mammogram images'][['image_path', 'PatientBirthDate', 'PatientSex', 'StudyTime', 'Laterality', 'Modality']]
 ROI_mask_images_data = di_data[di_data['SeriesDescription'] == 'ROI mask images'][['image_path', 'PatientBirthDate', 'PatientSex', 'StudyTime', 'Laterality', 'Modality']]
 
@@ -62,12 +66,16 @@ for i in range(len(mass_combined)):
 print(mass_combined.loc[0, "ROI_mask_file_path"])
 
 
+
 guardarimagenes = True
 if(guardarimagenes):
     # Display images
+    os.makedirs("examples", exist_ok=True)
     print('Mostramos imágenes:')
-    display_images(mass_combined, 'image_file_path', 5, 'examples/mass_clean_images.jpeg')
-    display_images(mass_combined, 'ROI_mask_file_path', 5, 'examples/mass_clean_roi.jpeg')
+    display_images(mass_combined, 'image_file_path', 5,
+                    os.path.join('examples', 'mass_example_image.jpeg'))
+    display_images(mass_combined, 'ROI_mask_file_path', 5,
+                    os.path.join('examples', 'mass_example_roi.jpeg'))
 
 
 # Ahora buscamos cuales son las dimensiones para poder cargarlas y procesarlas
