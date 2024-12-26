@@ -3,7 +3,7 @@ import time
 import copy
 
 def train_model(model, optimizer, criterion, train_loader, val_loader,
-                epochs, device, save_name, patience=10):
+                epochs, device, patience=10):
     model.to(device)
     best_val_accuracy = 0.0
     train_losses = []
@@ -42,7 +42,7 @@ def train_model(model, optimizer, criterion, train_loader, val_loader,
                 outputs = model(images)                
                 loss = criterion(outputs, labels)
                 val_loss += loss.item()
-                predicted = torch.argmax(outputs, dim=1).view(1,-1)  # Select class index with max score
+                predicted = torch.argmax(outputs, dim=1).view(1,-1)
                 val_correct += (predicted == labels).sum().item()
                 val_total += labels.size(0)
                 
@@ -72,8 +72,6 @@ def train_model(model, optimizer, criterion, train_loader, val_loader,
                 print(f"Early stopping triggered at epoch {epoch+1}")
                 break
     print(f"Best validation accuracy: {best_val_accuracy:.4f}")
-    # Save the final model
-    torch.save(best_model.state_dict(), f"models/{save_name}.pth")
     
     # Return metrics for graphing
     return train_losses, val_losses, val_accuracies, best_model

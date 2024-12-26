@@ -1,23 +1,23 @@
 
 import torch
 from functions.networks.linear import Simple_Linear
-#from functions.networks.linear import Simple_Linear_Meta
+from functions.networks.linear_Meta import Simple_Linear_Meta
 from functions.networks.linear import Linear
-#from functions.networks.linear import Linear_Meta
+from functions.networks.linear_Meta import Linear_Meta
 from functions.networks.simple_cnn import SimpleCNN
-from functions.networks.simple_cnn_with_metadata import SimpleCNN_Meta
-#from functions.networks.conv_plus_transformer import ConvPlusTransformer
+from functions.networks.simple_cnn_Meta import SimpleCNN_Meta
+#from functions.networks.transformer_Meta import Transf_Meta
 
 
 def get_val_accuracy(test_loader, best_history):
     model_classes = {
         "Simple_Linear": Simple_Linear,
-        #"Simple_Linear_Meta": Simple_Linear_Meta,
+        "Simple_Linear_Meta": Simple_Linear_Meta,
         "Linear": Linear,
-        #"Linear_Meta": Linear_Meta,
-        "CNN": SimpleCNN,
+        "Linear_Meta": Linear_Meta,
+        "SimpleCNN": SimpleCNN,
         "SimpleCNN_Meta": SimpleCNN_Meta,
-        #"TransMeta": ConvPlusTransformer,
+        #"Transf_Meta": Transf_Meta,
     }
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else
                     'mps' if torch.backends.mps.is_built() else 

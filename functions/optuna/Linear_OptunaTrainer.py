@@ -7,11 +7,13 @@ from functions.networks.linear import Linear
 from functions.build_model.training import train_model
 
 class Linear_OptunaTrainer:
-    def __init__(self, train_loader, val_loader, epochs, device):
+    def __init__(self, train_loader, val_loader, epochs, device, type, dataset):
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.epochs = epochs
         self.device = device
+        self.type = type
+        self.dataset = dataset
         self.trial_results = []
         self.best_history = {"val_loss": None}
 
@@ -21,7 +23,7 @@ class Linear_OptunaTrainer:
         dropout_rate = trial.suggest_categorical("dropout_rate", [0.1, 0.2])
         num_neurons = trial.suggest_categorical("num_neurons", [32, 64, 128])
 
-        print("Trial:",
+        print("Prueba actual:",
               "\nLearning rate:", learning_rate,
               "\nDropout rate:", dropout_rate,
               "\nNum neurons:", num_neurons)
@@ -40,7 +42,7 @@ class Linear_OptunaTrainer:
 
         # Train and validate
         train_losses, val_losses, val_accuracies, best_model = train_model(
-            model, optimizer, criterion, self.train_loader, self.val_loader, self.epochs, self.device, "Linear"
+            model, optimizer, criterion, self.train_loader, self.val_loader, self.epochs, self.device
         )
 
         val_loss = min(val_losses)
@@ -49,6 +51,8 @@ class Linear_OptunaTrainer:
         # Save trial results
         self.trial_results.append({
             "model": "Linear",
+            "type": self.type,
+            "dataset": self.dataset,
             "learning_rate": learning_rate,
             "dropout_rate": dropout_rate,
             "num_neurons": num_neurons,
@@ -60,8 +64,11 @@ class Linear_OptunaTrainer:
         if self.best_history["val_loss"] is None or val_loss < self.best_history["val_loss"]:
             self.best_history.update({
                 "model": "Linear",
+                "type": self.type,
+                "dataset": self.dataset,
                 "val_loss": val_loss,
-                "val_accuracy": val_accuracy,
+                "val_losses": val_losses,
+                "val_accuracies": val_accuracies,
                 "best_model": best_model.state_dict(),
                 "initial_weights": initial_weights,
                 "hyperparameters": {

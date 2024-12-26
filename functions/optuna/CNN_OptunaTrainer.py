@@ -7,11 +7,13 @@ from functions.build_model.training import train_model
 from functions.networks.simple_cnn import SimpleCNN
 
 class CNN_OptunaTrainer:
-    def __init__(self, train_loader, val_loader, epochs, device):
+    def __init__(self, train_loader, val_loader, epochs, device, type, dataset):
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.epochs = epochs
         self.device = device
+        self.type = type
+        self.dataset = dataset
         self.trial_results = []
         self.best_history = {"val_loss": None}
 
@@ -54,7 +56,9 @@ class CNN_OptunaTrainer:
 
         # Append trial details to the results list
         self.trial_results.append({
-            "model": "SimpleCNN_Meta",
+            "model": "SimpleCNN",
+            "type": self.type,
+            "dataset": self.dataset,
             "learning_rate": learning_rate,
             "dropout_rate": dropout_rate,
             "num_neurons": num_neurons,
@@ -64,20 +68,23 @@ class CNN_OptunaTrainer:
             "val_accuracy": val_accuracy,
         })
         # Update the best history if this trial is better
-        if self.best_history is None or val_loss < min([h["val_loss"] for h in self.trial_results]):
+        if self.best_history["val_loss"] is None or val_loss < min([h["val_loss"] for h in self.trial_results]):
             self.best_history = {
-                "model": "SimpleCNN_Meta",
+                "model": "SimpleCNN",
+                "type": self.type,
+                "dataset": self.dataset,
                 "train_losses": train_losses,
+                "val_loss": val_loss,
                 "val_losses": val_losses,
                 "val_accuracies": val_accuracies,
                 "best_model": best_model.state_dict(),
                 "initial_weights": initial_weights,
                 "hyperparameters": {
-                "learning_rate": learning_rate,
-                "dropout_rate": dropout_rate,
-                "num_neurons": num_neurons,
-                "stride": stride,
-                "kernel_size": kernel_size,
+                    "learning_rate": learning_rate,
+                    "dropout_rate": dropout_rate,
+                    "num_neurons": num_neurons,
+                    "stride": stride,
+                    "kernel_size": kernel_size,
                 },
             }
         return val_loss

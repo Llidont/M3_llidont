@@ -3,10 +3,10 @@ import optuna
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-from functions.build_model.training import train_model
-from functions.networks.linear import Simple_Linear
+from functions.build_model.training_with_metadata import train_model_with_metadata
+from functions.networks.linear_Meta import Simple_Linear_Meta
 
-class SimpleLinear_OptunaTrainer:
+class SimpleLinear_Meta_OptunaTrainer:
     def __init__(self, train_loader, val_loader, epochs, device, type, dataset):
         self.train_loader = train_loader
         self.val_loader = val_loader
@@ -26,7 +26,7 @@ class SimpleLinear_OptunaTrainer:
               "\nDropout rate:", dropout_rate)
 
         # Initialize model
-        model = Simple_Linear(
+        model = Simple_Linear_Meta(
             dropout_rate=dropout_rate,
         ).to(self.device)
         
@@ -37,7 +37,7 @@ class SimpleLinear_OptunaTrainer:
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
         # Train and validate
-        train_losses, val_losses, val_accuracies, best_model = train_model(
+        train_losses, val_losses, val_accuracies, best_model = train_model_with_metadata(
             model, optimizer, criterion, self.train_loader, self.val_loader, self.epochs, self.device
         )
 
@@ -46,7 +46,7 @@ class SimpleLinear_OptunaTrainer:
 
         # Save trial results
         self.trial_results.append({
-            "model": "Simple_Linear",
+            "model": "Simple_Linear_Meta",
             "type": self.type,
             "dataset": self.dataset,
             "learning_rate": learning_rate,
@@ -59,7 +59,7 @@ class SimpleLinear_OptunaTrainer:
         # Update best model
         if self.best_history["val_loss"] is None or val_loss < self.best_history["val_loss"]:
             self.best_history.update({
-                "model": "Simple_Linear",
+                "model": "Simple_Linear_Meta",
                 "type": self.type,
                 "dataset": self.dataset,
                 "val_loss": val_loss,

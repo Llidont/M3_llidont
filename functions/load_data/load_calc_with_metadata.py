@@ -11,6 +11,7 @@ def load_calc_with_metadata(image_size, batch_size, file_name = "processed_datas
     combined_dataset = processed_dataset.sample(frac=1).reset_index(drop=True)
     combined_dataset["label"] = combined_dataset["label"].replace("BENIGN_WITHOUT_CALLBACK", "BENIGN")
     combined_dataset["label"] = combined_dataset["label"].map({'BENIGN': 0, 'MALIGNANT': 1})
+    combined_dataset["ROI_path"] = combined_dataset["ROI_path"].str.replace('\\', '/')
     combined_dataset["calc_type"] = indexify_column(combined_dataset, "calc_type")
     combined_dataset["calc_distribution"] = indexify_column(combined_dataset, "calc_distribution")
 

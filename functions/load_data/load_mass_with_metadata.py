@@ -11,9 +11,9 @@ def load_mass_with_metadata(image_size, batch_size, file_name = "processed_datas
     combined_dataset = processed_dataset.sample(frac=1).reset_index(drop=True)
     combined_dataset["label"] = combined_dataset["label"].replace("BENIGN_WITHOUT_CALLBACK", "BENIGN")
     combined_dataset["label"] = combined_dataset["label"].map({'BENIGN': 0, 'MALIGNANT': 1})
+    combined_dataset["ROI_path"] = combined_dataset["ROI_path"].str.replace('\\', '/')
     combined_dataset["mass_shape"] = indexify_column(combined_dataset, "mass_shape")
     combined_dataset["mass_margins"] = indexify_column(combined_dataset, "mass_margins")
-    combined_dataset["image_view"] = indexify_column(combined_dataset, "image_view")
 
     train_split = 0.7
     val_split = 0.2
@@ -58,13 +58,13 @@ class ImageDataset(Dataset):
             if self.transform:
                 image = self.transform(image)
             
-            self.dataframe[["subtlety", "image_view", "breast_density", "shape_vertical", "shape_horizontal"]] = self.dataframe[
+            self.dataframe[["subtlety", "breast_density", "shape_vertical", "shape_horizontal"]] = self.dataframe[
             ["subtlety", "breast_density", "shape_vertical", "shape_horizontal"]].apply(pd.to_numeric, errors="coerce")
 
             shape = torch.tensor(self.dataframe.loc[idx, "mass_shape"], dtype=torch.long)
             margins = torch.tensor(self.dataframe.loc[idx, "mass_margins"], dtype=torch.long)
 
-            other_metadata = self.dataframe.loc[idx, ["subtlety", "image_view", "breast_density", "shape_vertical", "shape_horizontal"]].values
+            other_metadata = self.dataframe.loc[idx, ["subtlety", "breast_density", "shape_vertical", "shape_horizontal"]].values
             other_metadata = np.array(other_metadata, dtype=np.float32)
 
             other_metadata = torch.tensor(other_metadata, dtype=torch.float32)

@@ -2,7 +2,7 @@ import os
 import torch
 import pandas as pd
 from functions.load_data.load_data import load_data
-from functions.load_data.load_calc_with_metadata import load_calc_with_metadata
+from functions.load_data.load_mass_with_metadata import load_mass_with_metadata
 from functions.optuna.get_val_accuracy import get_val_accuracy
 from functions.optuna.CNN_OptunaTrainer import CNN_OptunaTrainer
 from functions.optuna.CNN_Meta_OptunaTrainer import CNNMeta_OptunaTrainer
@@ -25,8 +25,8 @@ best_histories = {}
 combined_trial_results = []
 
 datasets = [
-    ('datasets/calc_prop/calc_prop_info.csv', 'prop'),
-    ('datasets/calc_dist/calc_dist_info.csv', 'dist')
+    ('datasets/mass_prop/mass_prop_info.csv', 'prop'),
+    ('datasets/mass_dist/mass_dist_info.csv', 'dist')
  ]
 
 for dataset_path, dataset_name in datasets:
@@ -35,7 +35,7 @@ for dataset_path, dataset_name in datasets:
     train_loader, val_loader, test_loader = load_data(IMAGE_SIZE, BATCH_SIZE, dataset_path)
     full_model_name = f"SimpleCNN_{dataset_name}"
     print(full_model_name)
-    SimpleCNN_trainer = CNN_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'calc', dataset_name)
+    SimpleCNN_trainer = CNN_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
     SimpleCNN_study = SimpleCNN_trainer.run_study(n_trials=16)
     accuracy = get_val_accuracy(test_loader, SimpleCNN_trainer.best_history)
     SimpleCNN_trainer.best_history['accuracy'] = accuracy
@@ -44,10 +44,10 @@ for dataset_path, dataset_name in datasets:
     trial_results_list.append(pd.DataFrame(SimpleCNN_trainer.trial_results))
 
     # CNN con metadatos
-    train_loader, val_loader, test_loader = load_calc_with_metadata(IMAGE_SIZE, BATCH_SIZE, dataset_path)
+    train_loader, val_loader, test_loader = load_mass_with_metadata(IMAGE_SIZE, BATCH_SIZE, dataset_path)
     print(full_model_name)
     full_model_name = f"Linear_{dataset_name}"
-    SimpleCNN_Meta_trainer = CNNMeta_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'calc', dataset_name)
+    SimpleCNN_Meta_trainer = CNNMeta_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
     SimpleCNN_Meta_study = SimpleCNN_Meta_trainer.run_study(n_trials=16)
     accuracy = get_val_accuracy(test_loader, SimpleCNN_Meta_trainer.best_history)
     SimpleCNN_Meta_trainer.best_history['accuracy'] = accuracy
@@ -67,6 +67,6 @@ combined_trial_results = pd.concat(trial_results_list, ignore_index=True)
 print(f"The best model is {best_model_name} with validation loss {best_best_history['val_loss']} and accuracy {best_best_history['accuracy']:.2f}%")
 
 # Guardamos el modelo y su historia, así como los resultados del resto de los intentos
-torch.save(best_histories, "models/best_histories_calc_cnn.pth")
-torch.save(best_best_history, "models/best_model_calc_cnn.pth")
-combined_trial_results.to_csv("models/history_calc_cnn.csv", index=False)
+torch.save(best_histories, "models/best_histories_mass_cnn.pth")
+torch.save(best_best_history, "models/best_model_mass_cnn.pth")
+combined_trial_results.to_csv("models/history_mass_cnn.csv", index=False)

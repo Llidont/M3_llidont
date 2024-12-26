@@ -3,10 +3,10 @@ import optuna
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-from functions.build_model.training import train_model
-from functions.networks.linear import Simple_Linear
+from functions.networks.linear_Meta import Linear_Meta
+from functions.build_model.training_with_metadata import train_model_with_metadata
 
-class SimpleLinear_OptunaTrainer:
+class Linear_Meta_OptunaTrainer:
     def __init__(self, train_loader, val_loader, epochs, device, type, dataset):
         self.train_loader = train_loader
         self.val_loader = val_loader
@@ -18,16 +18,20 @@ class SimpleLinear_OptunaTrainer:
         self.best_history = {"val_loss": None}
 
     def objective(self, trial):
+        # Define hyperparameter search space
         learning_rate = trial.suggest_categorical("learning_rate", [0.001, 0.01])
         dropout_rate = trial.suggest_categorical("dropout_rate", [0.1, 0.2])
+        num_neurons = trial.suggest_categorical("num_neurons", [32, 64, 128])
 
         print("Prueba actual:",
               "\nLearning rate:", learning_rate,
-              "\nDropout rate:", dropout_rate)
+              "\nDropout rate:", dropout_rate,
+              "\nNum neurons:", num_neurons)
 
         # Initialize model
-        model = Simple_Linear(
+        model = Linear_Meta(
             dropout_rate=dropout_rate,
+            num_neurons=num_neurons,
         ).to(self.device)
         
         initial_weights = copy.deepcopy(model.state_dict())
@@ -37,7 +41,7 @@ class SimpleLinear_OptunaTrainer:
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
         # Train and validate
-        train_losses, val_losses, val_accuracies, best_model = train_model(
+        train_losses, val_losses, val_accuracies, best_model = train_model_with_metadata(
             model, optimizer, criterion, self.train_loader, self.val_loader, self.epochs, self.device
         )
 
@@ -46,12 +50,12 @@ class SimpleLinear_OptunaTrainer:
 
         # Save trial results
         self.trial_results.append({
-            "model": "Simple_Linear",
+            "model": "Linear_Meta",
             "type": self.type,
             "dataset": self.dataset,
             "learning_rate": learning_rate,
             "dropout_rate": dropout_rate,
-            "train_loss": train_losses,
+            "num_neurons": num_neurons,
             "val_loss": val_loss,
             "val_accuracy": val_accuracy,
         })
@@ -59,7 +63,7 @@ class SimpleLinear_OptunaTrainer:
         # Update best model
         if self.best_history["val_loss"] is None or val_loss < self.best_history["val_loss"]:
             self.best_history.update({
-                "model": "Simple_Linear",
+                "model": "Linear_Meta",
                 "type": self.type,
                 "dataset": self.dataset,
                 "val_loss": val_loss,
@@ -70,17 +74,15 @@ class SimpleLinear_OptunaTrainer:
                 "hyperparameters": {
                     "learning_rate": learning_rate,
                     "dropout_rate": dropout_rate,
+                    "num_neurons": num_neurons,
                 },
             })
 
         return val_loss
     
-    def run_study(self):
-        self.search_space = {
-            "learning_rate": [0.01, 0.001],
-            "dropout_rate": [0.1, 0.2]
-        }
-        sampler = optuna.samplers.GridSampler(self.search_space)
-        study = optuna.create_study(sampler=sampler, direction="minimize")
-        study.optimize(self.objective)
+    def run_study(self, n_trials):
+        study = optuna.create_study(direction="minimize")
+        study.optimize(self.objective, n_trials=n_trials)
         return study
+
+

@@ -5,20 +5,21 @@ class SimpleCNN_Meta(nn.Module):
     def __init__(self, kernel_size=16, stride = 2, num_neurons = 32, layer_filter = 1,
                  input_size = 500, in_channels=1, num_classes = 2, dropout_rate=0.2):
         super(SimpleCNN_Meta, self).__init__()
-        self.conv = nn.Conv2d(in_channels, layer_filter, kernel_size = kernel_size, stride = stride, padding=kernel_size//2)
+        self.conv = nn.Conv2d(in_channels, layer_filter, kernel_size = kernel_size,
+                               stride = stride, padding=kernel_size//2)
         self.sigmoid = nn.Sigmoid()
         self.output_size = self._calculate_output_size(input_size, kernel_size, stride)
         self.fc1 = nn.Linear(self.output_size, num_neurons)
-        self.fc2 = nn.Linear(num_neurons, 3)
+        self.fc2 = nn.Linear(num_neurons, 4)
         self.dropout_fc = nn.Dropout(dropout_rate)
         self.shapes_embedding = nn.Embedding(20, 3)
         self.margins_embedding = nn.Embedding(20, 3)
-        self.linear_unifier = nn.Linear(13, num_classes)
+        self.linear_unifier = nn.Linear(14, num_classes)
     
     def _calculate_output_size(self, input_size, kernel_size, stride):
         # Formula teniendo en cuenta que padding siempre es kernel//2
         output_size = (input_size + 2 * (kernel_size//2) - kernel_size) // stride + 1
-        return output_size * output_size
+        return output_size*output_size
     
     def forward(self, images, shapes, margins, other_metadatas):
         images = self.conv(images)
