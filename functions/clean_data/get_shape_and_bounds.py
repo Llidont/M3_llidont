@@ -12,7 +12,7 @@ def get_shape_and_bounds(mask_path: str) -> Dict[str, Union[int, None]]:
         Dict - Devuelve los límites y el tamaño de la región de interés
     '''
     if not os.path.exists(mask_path):
-        raise FileNotFoundError(f"The file at path '{mask_path}' does not exist.")
+        raise FileNotFoundError(f"La ruta '{mask_path}' no lleva a ningún archivo.")
     
     mask = np.array(Image.open(mask_path))
     binary_mask = mask > 0

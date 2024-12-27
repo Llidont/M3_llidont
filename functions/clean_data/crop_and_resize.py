@@ -45,10 +45,8 @@ def crop_and_resize(mask_path: str, required_dim: Tuple[int, int],
     if max_bounds!=0 or all_prop or current_h>req_h or current_w>req_w:
         if max_bounds!=0:
             aspect_ratio = min(req_h/(max_bounds-50), req_w/(max_bounds-50))
-            #print("AR_maxbounds:", aspect_ratio, type(aspect_ratio))
         else:
             aspect_ratio = min((req_h-50)/current_h, (req_w-50)/current_w)
-            #print("AR:", aspect_ratio, type(aspect_ratio))
         mask = scipyzoom(mask, aspect_ratio, order=3)
         top, bottom, left, right = (int(aspect_ratio*bound) for bound in (top, bottom, left, right))
         if image_path is not None:
@@ -56,7 +54,6 @@ def crop_and_resize(mask_path: str, required_dim: Tuple[int, int],
     
     current_h = bottom - top
     current_w = right - left
-    #print("Current:", current_h, current_w)
     
     # Obtenemos las dimensiones de crop y padding
     missing_h = max(0,(req_h - current_h)//2)
@@ -69,8 +66,6 @@ def crop_and_resize(mask_path: str, required_dim: Tuple[int, int],
     pad_left = abs(min(0, left - missing_w))
     c_right = min(right + missing_w, mask.shape[1]) 
     pad_right = req_w  - (c_right - c_left) - pad_left
-    #print("Added:", missing_h, missing_w)
-    #print("Crops:", c_top, c_bot, c_left, c_right)
     
     # Recortamos las imágenes
     cropped_mask = mask[c_top:c_bot, c_left:c_right]
@@ -78,7 +73,6 @@ def crop_and_resize(mask_path: str, required_dim: Tuple[int, int],
         cropped_image = image[c_top:c_bot, c_left:c_right]
     
     # Aplicamos el padding
-    #print("Padding:", pad_top, pad_bot, pad_left, pad_right)
     padded_mask = np.pad(
         cropped_mask,
         ((pad_top, pad_bot), (pad_left, pad_right)),

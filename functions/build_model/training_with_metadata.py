@@ -9,14 +9,14 @@ def train_model_with_metadata(model, optimizer, criterion, train_loader, val_loa
     val_accuracies = []
     val_losses = []
     
-    # Early stopping setup
+    # Inicialización de Early stopping
     early_stop_counter = 0
     best_val_loss = float('inf')
     
     for epoch in range(epochs):
         start_time = time.time()
         
-        # Training
+        # Entrenamiento
         model.train()
         train_loss = 0.0
         for images, shapes, margins, other_metadatas, labels in train_loader:
@@ -30,18 +30,19 @@ def train_model_with_metadata(model, optimizer, criterion, train_loader, val_loa
         train_loss /= len(train_loader)
         train_losses.append(train_loss)
         
-        # Validation
+        # Validación
         model.eval()
         val_correct = 0
         val_total = 0
         val_loss = 0.0
         with torch.no_grad():
-            for images, shapes, margins, other_metadatas, labels in val_loader: #ESTO PETA
+            for images, shapes, margins, other_metadatas, labels in val_loader:
                 images, shapes, margins, other_metadatas, labels = images.to(device), shapes.to(device), margins.to(device), other_metadatas.to(device),labels.to(device)
                 outputs = model(images, shapes, margins, other_metadatas)
                 loss = criterion(outputs, labels)
                 val_loss += loss.item()
-                predicted = torch.argmax(outputs, dim=1).view(1,-1)  # Select class index with max score
+                # Clase con mayor probabilidad
+                predicted = torch.argmax(outputs, dim=1).view(1,-1)
                 val_correct += (predicted == labels).sum().item()
                 val_total += labels.size(0)
                 
@@ -56,7 +57,7 @@ def train_model_with_metadata(model, optimizer, criterion, train_loader, val_loa
               f"Val Accuracy: {val_accuracy:.4f} | "
               f"Time: {epoch_time:.2f} seconds")
         
-        # Early stopping condition
+        # Condición de Early stopping
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             best_model = copy.deepcopy(model)
@@ -64,8 +65,8 @@ def train_model_with_metadata(model, optimizer, criterion, train_loader, val_loa
         else:
             early_stop_counter += 1
             if early_stop_counter >= patience:
-                print(f"Early stopping triggered at epoch {epoch+1}")
+                print(f"Parada por Early stopping en época {epoch+1}")
                 break
     
-    # Return metrics for graphing
+    # Métricas para graficar y modelo
     return train_losses, val_losses, val_accuracies, best_model

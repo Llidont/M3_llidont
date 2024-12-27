@@ -67,9 +67,9 @@ print(mass_combined.loc[0, "ROI_mask_file_path"])
 
 
 
-guardarimagenes = True
+guardarimagenes = False
 if(guardarimagenes):
-    # Display images
+    # Comprobación de imágenes
     os.makedirs("examples", exist_ok=True)
     print('Mostramos imágenes:')
     display_images(mass_combined, 'image_file_path', 5,
@@ -101,7 +101,7 @@ mass_combined[["shape_vertical", "shape_horizontal",
     lambda path: pd.Series(get_shape_and_bounds(path))
 )
 
-# Compute statistics
+# Obtenemos las medidas máximas y mínimas
 stats = {
     "max_vertical": max(mass_combined["shape_vertical"]),
     "min_vertical": min(mass_combined["shape_vertical"]),
@@ -111,8 +111,8 @@ stats = {
 
 required_dim = (500,500)
 
-# Mostramos las imágenes procesadas
-imagenesprocesadas=True
+# Comprobación de imágenes procesadas
+imagenesprocesadas=False
 if(imagenesprocesadas):
     process_and_display_images(mass_combined, 5, required_dim, 'mass_clean')
 
@@ -128,7 +128,7 @@ if(procesar_imagenes):
         bounds = row[["top", "bottom", "left", "right"]]
         final_mask, final_image = crop_and_resize(mask_path, required_dim, bounds, image_path)
         
-        # Save the cropped images
+        # Guardamos las imágenes procesadas
         final_mask.save(f"datasets/mass_clean/ROI/ROI" + image_index + ".png")
         final_image.save(f"datasets/mass_clean/image/image" + image_index + ".png")
         # Añadimos al diccionario

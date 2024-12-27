@@ -12,7 +12,7 @@ def display_images(data, column: str, number: int, output_file: str = 'default.j
     for i in range(number):
         image_path = data.iloc[i][column]
         
-        print(f"Trying to read: {image_path}")
+        print(f"Leyendo: {image_path}")
         if image_path.endswith(".dcm"):
             try:
                 if os.path.exists(image_path):

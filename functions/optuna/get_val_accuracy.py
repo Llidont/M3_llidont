@@ -35,7 +35,7 @@ def get_val_accuracy(test_loader, best_history):
     # Pasamos los hiperparámetros excepto los de entrenamiento
     filtered_hyperparameters = {
         k: v for k, v in best_history["hyperparameters"].items() 
-        if k not in ["dropout_rate", "learning_rate"]
+        if k not in ["learning_rate"]
     }
     model = model_class(**filtered_hyperparameters).to(DEVICE)
     model.load_state_dict(best_history["best_model"])
@@ -57,7 +57,7 @@ def get_val_accuracy(test_loader, best_history):
                 images, labels = batch
                 images, labels = images.to(DEVICE), labels.to(DEVICE)
                 outputs = model(images)
-            # Predictions
+            # Predicciones
             _, predicted = torch.max(outputs, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()

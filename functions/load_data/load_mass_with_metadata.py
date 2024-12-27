@@ -25,8 +25,6 @@ def load_mass_with_metadata(image_size, batch_size, file_name = "processed_datas
     val_data = combined_dataset[train_size:train_size + val_size].reset_index(drop=True)
     test_data = combined_dataset[train_size + val_size:].reset_index(drop=True)
 
-    
-
     transform = transforms.Compose([
         transforms.ToTensor()
     ])

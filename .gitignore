@@ -7,3 +7,4 @@ TODO.txt
 /drift
 /datasets
 functions/clean_data/download_dataset_hist.py
+*.pth

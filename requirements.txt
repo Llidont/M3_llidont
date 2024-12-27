@@ -1,0 +1,17 @@
+pipdeptree == 2.24.0
+pandas == 2.2.3
+plotly == 5.24.1
+psutil == 6.1.0
+pydicom == 3.0.1
+kagglehub == 0.3.5
+Pympler == 1.1
+scikit-learn == 1.5.2
+numpy == 2.0.2
+matplotlib == 3.9.3
+seaborn == 0.13.2
+tensorflow == 2.18.0
+keras == 3.7.0
+torch == 2.5.1
+pillow == 11.0.0
+torchvision == 0.20.1
+optuna == 4.1.0

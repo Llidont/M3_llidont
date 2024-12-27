@@ -1,4 +1,4 @@
-from image_classification_transformer.transformer import Transformer
+from functions.image_classification_transformer.transformer import Transformer
 import torch
 import torch.nn as nn
 

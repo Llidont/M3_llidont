@@ -10,14 +10,14 @@ def train_model(model, optimizer, criterion, train_loader, val_loader,
     val_accuracies = []
     val_losses = []
     
-    # Early stopping setup
+    # Inicialización de Early stopping
     early_stop_counter = 0
     best_val_loss = float('inf')
     
     for epoch in range(epochs):
         start_time = time.time()
         
-        # Training
+        # Entrenamiento
         model.train()
         train_loss = 0.0
         for images, labels in train_loader:
@@ -31,7 +31,7 @@ def train_model(model, optimizer, criterion, train_loader, val_loader,
         train_loss /= len(train_loader)
         train_losses.append(train_loss)
         
-        # Validation
+        # Validación
         model.eval()
         val_correct = 0
         val_total = 0
@@ -57,21 +57,16 @@ def train_model(model, optimizer, criterion, train_loader, val_loader,
               f"Val Accuracy: {val_accuracy:.4f} | "
               f"Time: {epoch_time:.2f} seconds")
         
-        # Save best model if validation accuracy improves
-        if val_accuracy > best_val_accuracy:
-            best_val_accuracy = val_accuracy
-            best_model = copy.deepcopy(model)
-        
-        # Early stopping condition
+        # Condición de Early stopping
         if val_loss < best_val_loss:
             best_val_loss = val_loss
+            best_model = copy.deepcopy(model)
             early_stop_counter = 0
         else:
             early_stop_counter += 1
             if early_stop_counter >= patience:
-                print(f"Early stopping triggered at epoch {epoch+1}")
+                print(f"Parada por Early stopping en época {epoch+1}")
                 break
-    print(f"Best validation accuracy: {best_val_accuracy:.4f}")
     
-    # Return metrics for graphing
+    # Métricas para graficar y modelo
     return train_losses, val_losses, val_accuracies, best_model

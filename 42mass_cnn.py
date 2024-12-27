@@ -18,6 +18,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else
 
 print(DEVICE)
 os.makedirs("models", exist_ok=True)
+model_name='mass_cnn'
 
 # Inicializamos listas y diccionarios
 trial_results_list = []
@@ -45,8 +46,8 @@ for dataset_path, dataset_name in datasets:
 
     # CNN con metadatos
     train_loader, val_loader, test_loader = load_mass_with_metadata(IMAGE_SIZE, BATCH_SIZE, dataset_path)
+    full_model_name = f"SimpleCNN_Meta_{dataset_name}"
     print(full_model_name)
-    full_model_name = f"Linear_{dataset_name}"
     SimpleCNN_Meta_trainer = CNNMeta_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
     SimpleCNN_Meta_study = SimpleCNN_Meta_trainer.run_study(n_trials=16)
     accuracy = get_val_accuracy(test_loader, SimpleCNN_Meta_trainer.best_history)
@@ -67,6 +68,6 @@ combined_trial_results = pd.concat(trial_results_list, ignore_index=True)
 print(f"The best model is {best_model_name} with validation loss {best_best_history['val_loss']} and accuracy {best_best_history['accuracy']:.2f}%")
 
 # Guardamos el modelo y su historia, así como los resultados del resto de los intentos
-torch.save(best_histories, "models/best_histories_mass_cnn.pth")
-torch.save(best_best_history, "models/best_model_mass_cnn.pth")
-combined_trial_results.to_csv("models/history_mass_cnn.csv", index=False)
+torch.save(best_histories, f"models/best_histories_{model_name}.pth")
+torch.save(best_best_history, f"models/best_model_{model_name}.pth")
+combined_trial_results.to_csv(f"models/history_{model_name}.csv", index=False)

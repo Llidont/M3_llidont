@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import math
 
+''' by Datacamp tutorial, https://www.datacamp.com/tutorial/building-a-transformer-with-py-torch, modified'''
 
 class PositionalEncoding(nn.Module):
     """Defines the positional encoding of sequences."""

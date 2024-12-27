@@ -73,9 +73,9 @@ calc_combined=calc_combined.reset_index(drop=True)
 print(calc_combined.loc[0, "ROI_mask_file_path"])
 
 
-guardarimagenes = True
+guardarimagenes = False
 if(guardarimagenes):
-    # Display images
+    # Comprobación de imágenes
     os.makedirs("examples", exist_ok=True)
     print('Mostramos imágenes:')
     display_images(calc_combined, 'image_file_path', 5,
@@ -107,7 +107,7 @@ calc_combined[["shape_vertical", "shape_horizontal",
     lambda path: pd.Series(get_shape_and_bounds(path))
 )
 
-# Compute statistics
+# Obtenemos las medidas máximas y mínimas
 stats = {
     "max_vertical": max(calc_combined["shape_vertical"]),
     "min_vertical": min(calc_combined["shape_vertical"]),
@@ -118,8 +118,8 @@ stats = {
 required_dim = (500,500)
 max_bound = 3808
 
-# Mostramos las imágenes procesadas
-imagenesprocesadas=True
+# Comprobación de imágenes procesadas
+imagenesprocesadas=False
 if(imagenesprocesadas):
     os.makedirs("examples", exist_ok=True)
     process_and_display_images(calc_combined, 5, required_dim, 'calc_clean', max_bounds=3808)
@@ -137,7 +137,7 @@ if(procesar_imagenes):
         bounds = row[["top", "bottom", "left", "right"]]
         final_mask, final_image = crop_and_resize(mask_path, required_dim, bounds, image_path)
         
-        # Save the cropped images
+        # Guardamos las imágenes procesadas
         final_mask.save(f"datasets/calc_clean/ROI/ROI" + image_index + ".png")
         final_image.save(f"datasets/calc_clean/image/image" + image_index + ".png")
         # Añadimos al diccionario

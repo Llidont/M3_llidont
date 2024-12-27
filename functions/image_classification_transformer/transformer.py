@@ -2,6 +2,7 @@ import torch.nn as nn
 from .transformer_elements import PositionalEncoding
 from .transformer_elements import EncoderLayer
 
+''' by Datacamp tutorial, https://www.datacamp.com/tutorial/building-a-transformer-with-py-torch, modified'''
 
 # Defining the Transformer
 class Transformer(nn.Module):

@@ -15,21 +15,20 @@ BATCH_SIZE = 5
 IMAGE_SIZE = (500, 500)
 NUM_CLASSES = 2
 EPOCHS = 10
+N_TRIALS = 16
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else
                       'mps' if torch.backends.mps.is_built() else 
                       'cpu')
 
 print(DEVICE)
 os.makedirs("models", exist_ok=True)
-model_name='calc_linear'
-import pandas as pd
+model_name='mass_linear'
 
-# Initialize lists and dictionaries
+# Inicialización de listas y diccionarios
 trial_results_list = []
 best_histories = {}
 combined_trial_results = []
 
-# Define datasets
 datasets = [
     ('datasets/mass_clean/mass_clean_info.csv', 'clean'),
     ('datasets/mass_prop/mass_prop_info.csv', 'prop'),
@@ -56,7 +55,7 @@ for dataset_path, dataset_name in datasets:
     full_model_name = f"Linear_Meta_{dataset_name}"
     print(full_model_name)
     Linear_Meta_trainer = Linear_Meta_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
-    Linear_Meta_study = Linear_Meta_trainer.run_study(n_trials=8)
+    Linear_Meta_study = Linear_Meta_trainer.run_study(n_trials=N_TRIALS)
     accuracy = get_val_accuracy(test_loader, Linear_Meta_trainer.best_history)
     Linear_Meta_trainer.best_history['accuracy'] = accuracy
     print(f"Test Accuracy of {full_model_name} model: {accuracy:.2f}%")
@@ -67,8 +66,8 @@ for dataset_path, dataset_name in datasets:
     train_loader, val_loader, test_loader = load_data(IMAGE_SIZE, BATCH_SIZE, dataset_path)
     
     # Simple_Linear Model
-    print(full_model_name)
     full_model_name = f"Simple_Linear_{dataset_name}"
+    print(full_model_name)
     Simple_Linear_trainer = SimpleLinear_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
     Simple_Linear_study = Simple_Linear_trainer.run_study()
     accuracy = get_val_accuracy(test_loader, Simple_Linear_trainer.best_history)
@@ -78,10 +77,10 @@ for dataset_path, dataset_name in datasets:
     trial_results_list.append(pd.DataFrame(Simple_Linear_trainer.trial_results))
 
     # Linear Model
-    print(full_model_name)
     full_model_name = f"Linear_{dataset_name}"
+    print(full_model_name)
     Linear_trainer = Linear_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
-    Linear_study = Linear_trainer.run_study(n_trials=8)
+    Linear_study = Linear_trainer.run_study(n_trials=N_TRIALS)
     accuracy = get_val_accuracy(test_loader, Linear_trainer.best_history)
     Linear_trainer.best_history['accuracy'] = accuracy
     print(f"Test Accuracy of {full_model_name} model: {accuracy:.2f}%")
@@ -96,10 +95,10 @@ best_best_history = best_histories[best_model_name]
 # Combinamos los resultados de los trials
 combined_trial_results = pd.concat(trial_results_list, ignore_index=True)
 
-# Print the best model and its history
+# Mejor modelo con sus métricas
 print(f"The best model is {best_model_name} with validation loss {best_best_history['val_loss']} and accuracy {best_best_history['accuracy']:.2f}%")
 
 # Guardamos el modelo y su historia, así como los resultados del resto de los intentos
-torch.save(best_histories, "models/best_histories_mass_linear.pth")
-torch.save(best_best_history, "models/best_model_mass_linear.pth")
-combined_trial_results.to_csv("models/history_mass_linear.csv", index=False)
+torch.save(best_histories, f"models/best_histories_{model_name}.pth")
+torch.save(best_best_history, f"models/best_model_{model_name}.pth")
+combined_trial_results.to_csv(f"models/history_{model_name}.csv", index=False)

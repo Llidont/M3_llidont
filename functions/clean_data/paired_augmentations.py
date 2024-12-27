@@ -34,14 +34,13 @@ def paired_augmentations(row: Series, new_index: int, output_dir: str, metadata:
         image_path = os.path.join(output_dir, "image", "image_" + new_index + ".png")
         ROI.save(ROI_path, format="PNG")
         image.save(image_path, format="PNG")
-        #print(f"Distorsion de {new_index} completada")
         new_row = {"index": new_index,
            "label": row["label"],
            "ROI_path": ROI_path,
            "image_path": image_path,
            "original": row["index"]}
 		
-        # Add updated columns to new_row
+        # Añadimos el resto de columnas a la nueva fila
         for column in metadata:
             new_row[column] = row[column]
         
