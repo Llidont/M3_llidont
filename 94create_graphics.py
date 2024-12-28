@@ -24,24 +24,28 @@ for models_path, models_name in best_models:
 colors = ['blue', 'green', 'red', 'orange']
 models = list(val_losses.keys())
 
+# Gráfica de pérdidas y accuracies lado a lado
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
+
 # Gráfica de pérdidas
-plt.figure(figsize=(10, 6))
 for i, model_name in enumerate(models):
-    plt.plot(val_losses[model_name], label=model_name, color=colors[i % len(colors)])
-plt.title('Validation Losses')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
-plt.grid(True)
-plt.savefig('examples/all_val_losses.png', bbox_inches='tight', dpi=200)
+    axes[0].plot(val_losses[model_name], label=model_name, color=colors[i % len(colors)])
+axes[0].set_title('Validation Losses')
+axes[0].set_xlabel('Epochs')
+axes[0].set_ylabel('Loss')
+axes[0].legend()
+axes[0].grid(True)
 
 # Gráfica de accuracies
-plt.figure(figsize=(10, 6))
 for i, model_name in enumerate(models):
-    plt.plot(val_accuracies[model_name], label=model_name, color=colors[i % len(colors)])
-plt.title('Validation Accuracies')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy (%)')
-plt.legend()
-plt.grid(True)
-plt.savefig('examples/all_val_accuracies.png', bbox_inches='tight', dpi=200)
+    axes[1].plot(val_accuracies[model_name], label=model_name, color=colors[i % len(colors)])
+axes[1].set_title('Validation Accuracies')
+axes[1].set_xlabel('Epochs')
+axes[1].set_ylabel('Accuracy (%)')
+axes[1].legend()
+axes[1].grid(True)
+
+# Guardamos el gráfico
+plt.tight_layout()
+plt.savefig('examples/all_metrics.png', bbox_inches='tight', dpi=200)
+

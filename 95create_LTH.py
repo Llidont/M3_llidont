@@ -127,30 +127,29 @@ for models_path, models_name in best_models:
         )
 
     # Creamos el doble gráfico
-    plt.figure(figsize=(14, 10))
-    plt.suptitle(f'{models_name} - Original vs LTH', fontsize=16)
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
+    fig.suptitle(f'{models_name} - Original vs LTH', fontsize=16)
 
     # Plot de pérdida
-    plt.subplot(2, 1, 1)
-    plt.plot(val_losses, label='Original', color='green')
-    plt.plot(val_losses_lt, label='LTH', color='red')
-    plt.title(f'Validation Losses')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.grid(True)
+    axes[0].plot(val_losses, label='Original', color='green')
+    axes[0].plot(val_losses_lt, label='LTH', color='red')
+    axes[0].set_title(f'Validation Losses')
+    axes[0].set_xlabel('Epochs')
+    axes[0].set_ylabel('Loss')
+    axes[0].legend()
+    axes[0].grid(True)
 
     # Plot de validación
-    plt.subplot(2, 1, 2)
-    plt.plot(val_accuracies, label='Original', color='green')
-    plt.plot(val_accuracies_lt, label='LTH', color='red')
-    plt.title(f'Validation Accuracies')
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy (%)')
-    plt.legend()
-    plt.grid(True)
+    axes[1].plot(val_accuracies, label='Original', color='green')
+    axes[1].plot(val_accuracies_lt, label='LTH', color='red')
+    axes[1].set_title(f'Validation Accuracies')
+    axes[1].set_xlabel('Epochs')
+    axes[1].set_ylabel('Accuracy (%)')
+    axes[1].legend()
+    axes[1].grid(True)
 
     # Guardamos el gráfico
     output_path = os.path.join('examples', f'LTH_{models_name}.png')
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig(output_path, bbox_inches='tight', dpi=200)
+

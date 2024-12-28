@@ -50,7 +50,7 @@ for models_path, models_name in best_models:
     if 'train_loss' in dataset.columns:
         dataset = dataset.drop(columns=['train_loss'])
     
-    dataset = dataset.sort_values(by='val_loss', ascending=True).reset_index(drop=True).head(50)
+    dataset = dataset.sort_values(by='val_loss', ascending=True).reset_index(drop=True)
     for col in dataset.select_dtypes(include=['float64']).columns:
         dataset[col] = dataset[col].round(3)
     dataset['num_neurons'] = dataset['num_neurons'].fillna('-')

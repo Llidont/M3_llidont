@@ -11,7 +11,8 @@ from functions.optuna.CNN_Meta_OptunaTrainer import CNNMeta_OptunaTrainer
 BATCH_SIZE = 5
 IMAGE_SIZE = (500, 500)
 NUM_CLASSES = 2
-EPOCHS = 3
+EPOCHS = 20
+N_TRIALS = 24
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else
                       'mps' if torch.backends.mps.is_built() else 
                       'cpu')
@@ -37,7 +38,7 @@ for dataset_path, dataset_name in datasets:
     full_model_name = f"SimpleCNN_{dataset_name}"
     print(full_model_name)
     SimpleCNN_trainer = CNN_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
-    SimpleCNN_study = SimpleCNN_trainer.run_study(n_trials=16)
+    SimpleCNN_study = SimpleCNN_trainer.run_study(n_trials=N_TRIALS)
     accuracy = get_val_accuracy(test_loader, SimpleCNN_trainer.best_history)
     SimpleCNN_trainer.best_history['accuracy'] = accuracy
     print(f"Test Accuracy of {full_model_name} model: {accuracy:.2f}%")
@@ -49,7 +50,7 @@ for dataset_path, dataset_name in datasets:
     full_model_name = f"SimpleCNN_Meta_{dataset_name}"
     print(full_model_name)
     SimpleCNN_Meta_trainer = CNNMeta_OptunaTrainer(train_loader, val_loader, EPOCHS, DEVICE, 'mass', dataset_name)
-    SimpleCNN_Meta_study = SimpleCNN_Meta_trainer.run_study(n_trials=16)
+    SimpleCNN_Meta_study = SimpleCNN_Meta_trainer.run_study(n_trials=N_TRIALS)
     accuracy = get_val_accuracy(test_loader, SimpleCNN_Meta_trainer.best_history)
     SimpleCNN_Meta_trainer.best_history['accuracy'] = accuracy
     print(f"Test Accuracy of {full_model_name} model: {accuracy:.2f}%")

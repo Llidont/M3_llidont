@@ -14,7 +14,7 @@ from functions.optuna.SimpleLinear_Meta_OptunaTrainer import SimpleLinear_Meta_O
 BATCH_SIZE = 5
 IMAGE_SIZE = (500, 500)
 NUM_CLASSES = 2
-EPOCHS = 10
+EPOCHS = 20
 N_TRIALS = 16
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else
                       'mps' if torch.backends.mps.is_built() else 
