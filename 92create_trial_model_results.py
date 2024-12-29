@@ -34,10 +34,7 @@ datasets = [
 for models_path, models_name in datasets:
     print(f"Processing dataset: {models_name}")
     dataset = pd.read_csv(os.path.join('models', models_path))
-    # Si se ha incluido la columna por error, se elimina
-    if 'train_loss' in dataset.columns:
-        dataset = dataset.drop(columns=['train_loss'])
-    dataset = dataset.sort_values(by='val_loss', ascending=True).reset_index(drop=True).head(50)
+    dataset = dataset.sort_values(by='val_accuracy', ascending=False).reset_index(drop=True).head(50)
 
     for col in dataset.select_dtypes(include=['float64']).columns:
         dataset[col] = dataset[col].round(3)

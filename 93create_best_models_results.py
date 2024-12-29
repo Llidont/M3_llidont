@@ -1,5 +1,6 @@
 import os
 import torch
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.plotting import table
@@ -42,15 +43,15 @@ for models_path, models_name in best_models:
         hyperparameters['type'] = model_info['type']
         hyperparameters['dataset'] = model_info['dataset']
         hyperparameters['val_loss'] = model_info['val_loss']
+        val_losses = model_info['val_losses']
+        best_model_position = np.argmin(val_losses)
+        hyperparameters['val_accuracy'] = model_info['val_accuracies'][best_model_position]
         hyperparameters['accuracy'] = model_info['accuracy']
         models_info_list.append(hyperparameters)
     
     dataset = pd.concat(models_info_list, ignore_index=True)
-    # Si se ha incluido la columna por error, se elimina
-    if 'train_loss' in dataset.columns:
-        dataset = dataset.drop(columns=['train_loss'])
     
-    dataset = dataset.sort_values(by='val_loss', ascending=True).reset_index(drop=True)
+    dataset = dataset.sort_values(by='val_accuracy', ascending=False).reset_index(drop=True)
     for col in dataset.select_dtypes(include=['float64']).columns:
         dataset[col] = dataset[col].round(3)
     dataset['num_neurons'] = dataset['num_neurons'].fillna('-')

@@ -8,4 +8,4 @@ TODO.txt
 /datasets
 functions/clean_data/download_dataset_hist.py
 *.pth
-*.pyc
+/models/models_prev
