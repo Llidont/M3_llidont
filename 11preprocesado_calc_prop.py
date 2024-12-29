@@ -10,11 +10,14 @@ from functions.clean_data.process_and_display_images import process_and_display_
 from functions.clean_data.crop_and_resize import crop_and_resize
 
 # Carga y limpieza de datos -------------------------------------------
-try:
-    di_data = pd.read_csv(os.path.join('datasets', 'archive', 'csv', 'dicom_info.csv'))
-except:
+if not os.path.exists('datasets/archive/csv'):
+    print("Descargando el dataset...")
     download_dataset_CBIS_DDSM()
-    di_data = pd.read_csv(os.path.join('datasets', 'archive', 'csv', 'dicom_info.csv'))
+    print("Dataset descargado")
+
+di_data = pd.read_csv('datasets/archive/csv/dicom_info.csv')
+calc_test = pd.read_csv('datasets/archive/csv/calc_case_description_test_set.csv')
+calc_train = pd.read_csv('datasets/archive/csv/calc_case_description_train_set.csv')
 
 full_mammo_images_data = di_data[di_data['SeriesDescription'] == 'full mammogram images'][['image_path', 'PatientBirthDate', 'PatientSex', 'StudyTime', 'Laterality', 'Modality']]
 ROI_mask_images_data = di_data[di_data['SeriesDescription'] == 'ROI mask images'][['image_path', 'PatientBirthDate', 'PatientSex', 'StudyTime', 'Laterality', 'Modality']]
@@ -31,10 +34,6 @@ ROI_mask_images = di_data[di_data['SeriesDescription'] == 'ROI mask images']['im
 # Aún no arreglamos el os.path.separator
 full_mammo_images = full_mammo_images.str.replace('CBIS-DDSM/jpeg', 'datasets/archive/jpeg', regex=False)
 ROI_mask_images = ROI_mask_images.str.replace('CBIS-DDSM/jpeg', 'datasets/archive/jpeg', regex=False)
-
-# Cargamos los datasets
-calc_test = pd.read_csv('datasets/archive/csv/calc_case_description_test_set.csv')
-calc_train = pd.read_csv('datasets/archive/csv/calc_case_description_train_set.csv')
 
 # Homogeneizamos los nombres de las columnas
 calc_test = calc_test.rename(columns=lambda x: re.sub(r' ', '_', x))
