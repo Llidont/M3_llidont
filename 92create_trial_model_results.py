@@ -35,11 +35,12 @@ for models_path, models_name in datasets:
     print(f"Processing dataset: {models_name}")
     dataset = pd.read_csv(os.path.join('models', models_path))
     dataset = dataset.sort_values(by='val_accuracy', ascending=False).reset_index(drop=True).head(50)
-
-    for col in dataset.select_dtypes(include=['float64']).columns:
-        dataset[col] = dataset[col].round(3)
     
-    dataset['num_neurons'] = dataset['num_neurons'].fillna('-')
+    dataset['dropout_rate'] = dataset['dropout_rate'].round(6)
+    dataset['learning_rate'] = dataset['learning_rate'].round(6)
+    dataset['val_loss'] = dataset['val_loss'].round(3)
+    dataset['num_neurons'] = dataset['num_neurons'].fillna(0).astype('Int64').astype(str)
+    dataset['num_neurons'] = dataset['num_neurons'].replace('0', '-')
     dataset['val_accuracy'] = dataset['val_accuracy'] * 100
     dataset['val_accuracy'] = dataset['val_accuracy'].round(1).astype(str) + '%'
     

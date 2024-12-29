@@ -52,9 +52,12 @@ for models_path, models_name in best_models:
     dataset = pd.concat(models_info_list, ignore_index=True)
     
     dataset = dataset.sort_values(by='val_accuracy', ascending=False).reset_index(drop=True)
-    for col in dataset.select_dtypes(include=['float64']).columns:
-        dataset[col] = dataset[col].round(3)
-    dataset['num_neurons'] = dataset['num_neurons'].fillna('-')
+    dataset['dropout_rate'] = dataset['dropout_rate'].round(6)
+    dataset['learning_rate'] = dataset['learning_rate'].round(6)
+    dataset['val_loss'] = dataset['val_loss'].round(3)
+    dataset['val_accuracy'] = dataset['val_accuracy'].round(3)
+    dataset['num_neurons'] = dataset['num_neurons'].fillna(0).astype('Int64').astype(str)
+    dataset['num_neurons'] = dataset['num_neurons'].replace('0', '-')
     dataset['accuracy'] = dataset['accuracy'].round(1).astype(str) + '%'
     dataset = dataset.rename(columns=column_rename_dict)
     
