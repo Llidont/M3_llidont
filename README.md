@@ -7,8 +7,11 @@ Este repositorio contiene los scripts, funciones y modelos necesarios para la cl
 ## Ficha
 
 Autora: Laura María Lidón Tárraga (llidont@uoc.edu)
+
 Tutora: Ana Belén Nieto Librero
+
 Repositorio: https://github.com/Llidont/M3_llidont
+
 Respaldo: https://drive.google.com/drive/folders/1fbG6DSPdrKAo6__7JsctJLh4BKRHEwss (solo accesible con cuenta corporativa de la UOC)
 
 ## Requisitos
