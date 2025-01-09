@@ -29,8 +29,7 @@ Para ejecutar el código, es necesario instalar las dependencias listadas en el 
 
 ### Scripts de Modelos
 1. **`31calc_linear.py` y `32mass_linear.py`**: Modelos lineales para clasificación de calcificaciones y masas.
-2. **`41calc_cnn.py` y `42mass_cnn.py`**: Redes neuronales convolucionales (CNN) básicas.
-3. **`52mass_trans.py`**: Implementación de modelos avanzados usando transformadores.
+2. **`41calc_cnn.py` y `42mass_cnn.py`**: Redes neuronales convolucionales (CNN).
 
 ### Scripts de Análisis y Resultados
 1. **`91create_example_images.py`**: Generación de imágenes de ejemplo del dataset.
